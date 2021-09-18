@@ -1,13 +1,14 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, field, asdict
 
 
 class Base:
-    def asdict(self):
+    def to_dict(self):
         return asdict(self)
 
 
 @dataclass
 class Field(Base):
+    type: str = field(init=False)
     name: str
 
 
@@ -15,16 +16,22 @@ class Field(Base):
 class TokensField(Field):
     tokens: list[str]
 
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.TokensField"
+
 
 @dataclass
 class GraphField(Field):
-    edges: list[tuple[int, int, str]]
+    edges: list[list[int, int, str]]
     roots: list[int]
+
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.GraphField"
 
 
 @dataclass
 class Sentence(Base):
-    n_tokens: int
+    numTokens: int
     fields: list[Field]
 
 
