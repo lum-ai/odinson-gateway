@@ -40,7 +40,7 @@ class Field(Base):
         elif data["$type"] == "ai.lum.odinson.GraphField":
             return GraphField.from_dict(data)
         else:
-            raise Exception('unsupported field type')
+            raise Exception("unsupported field type")
 
 
 @dataclass
@@ -52,7 +52,7 @@ class TokensField(Field):
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['name'], data['tokens'])
+        return cls(data["name"], data["tokens"])
 
 
 @dataclass
@@ -65,8 +65,7 @@ class GraphField(Field):
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data['name'], data['edges'], data['roots'])
-
+        return cls(data["name"], data["edges"], data["roots"])
 
 
 @dataclass
@@ -76,8 +75,8 @@ class Sentence(Base):
 
     @classmethod
     def from_dict(cls, data):
-        numTokens = data['numTokens']
-        fields = [Field.from_dict(f) for f in data['fields']]
+        numTokens = data["numTokens"]
+        fields = [Field.from_dict(f) for f in data["fields"]]
         return cls(numTokens, fields)
 
 
@@ -89,7 +88,7 @@ class Document(Base):
 
     @classmethod
     def from_dict(cls, data):
-        id = data['id']
-        metadata = [Field.from_dict(f) for f in data['metadata']]
-        sentences = [Sentence.from_dict(s) for s in data['sentences']]
+        id = data["id"]
+        metadata = [Field.from_dict(f) for f in data["metadata"]]
+        sentences = [Sentence.from_dict(s) for s in data["sentences"]]
         return cls(id, metadata, sentences)
