@@ -1,29 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from py4j.java_gateway import JavaGateway, GatewayParameters, get_field
-from .document import Document
-
-
-class Odinson:
-    def __init__(self) -> None:
-        self.gateway = JavaGateway(
-            gateway_parameters=GatewayParameters(auto_convert=True)
-        )
-
-    def make_memory_index(self, documents: list[Document]):
-        data = [d.to_dict() for d in documents]
-        ee = self.gateway.entry_point.mkMemoryIndex(data)
-        return ExtractorEngine(ee)
-
-
-class ExtractorEngine:
-    def __init__(self, extractor_engine):
-        self.extractor_engine = extractor_engine
-
-    def search(self, pattern: str) -> OdinsonResults:
-        query = self.extractor_engine.mkQuery(pattern)
-        res = self.extractor_engine.query(query)
-        return OdinsonResults.from_scala(res)
+from py4j.java_gateway import get_field
 
 
 @dataclass

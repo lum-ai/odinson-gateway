@@ -2,10 +2,10 @@ package odinson
 
 import py4j.GatewayServer
 
-object OdinsonGateway {
+object OdinsonGatewayServer {
     def main(args: Array[String]): Unit = {
         val gatewayServer = new GatewayServer(new OdinsonEntryPoint())
         gatewayServer.start()
-        println("OdinsonGateway server started")
+        println("OdinsonGatewayServer started")
     }
 }
