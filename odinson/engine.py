@@ -12,11 +12,11 @@ class ExtractorEngine:
     def search(
         self,
         pattern: str,
-        n: Optional[int] = None,
+        max_hits: Optional[int] = None,
         disable_match_selector: bool = False,
     ) -> OdinsonResults:
-        if n is None:
-            n = self.num_docs()
+        if max_hits is None:
+            max_hits = self.num_docs()
         query = self.extractor_engine.mkQuery(pattern)
-        res = self.extractor_engine.query(query, n, disable_match_selector)
+        res = self.extractor_engine.query(query, max_hits, disable_match_selector)
         return OdinsonResults.from_scala(res)
