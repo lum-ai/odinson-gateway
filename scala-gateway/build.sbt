@@ -1,4 +1,4 @@
-name := "odinson-py4j"
+name := "scala-gateway"
 organization := "ai.lum"
 scalaVersion := "2.12.14"
 libraryDependencies ++= Seq(
