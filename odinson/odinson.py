@@ -34,11 +34,7 @@ class OdinsonResults:
     @classmethod
     def from_scala(cls, res):
         total_hits = res.totalHits()
-        score_docs = res.scoreDocs()
-        docs = []
-        for i in range(len(score_docs)):
-            d = ScoreDoc.from_scala(score_docs[i])
-            docs.append(d)
+        docs = [ScoreDoc.from_scala(d) for d in res.scoreDocs()]
         return cls(total_hits, docs)
 
 
@@ -52,11 +48,7 @@ class ScoreDoc:
     def from_scala(cls, score_doc):
         doc = get_field(score_doc, "doc")
         score = get_field(score_doc, "score")
-        odinson_matches = score_doc.matches()
-        matches = []
-        for i in range(len(odinson_matches)):
-            m = OdinsonMatch.from_scala(odinson_matches[i])
-            matches.append(m)
+        matches = [OdinsonMatch.from_scala(m) for m in score_doc.matches()]
         return cls(doc, score, matches)
 
 
@@ -70,11 +62,7 @@ class OdinsonMatch:
     def from_scala(cls, match):
         start = match.start()
         end = match.end()
-        captures = match.namedCaptures()
-        named_captures = []
-        for i in range(len(captures)):
-            c = NamedCapture.from_scala(captures[i])
-            named_captures.append(c)
+        named_captures = [NamedCapture.from_scala(c) for c in match.namedCaptures()]
         return cls(start, end, named_captures)
 
 
