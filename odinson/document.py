@@ -1,9 +1,23 @@
 from dataclasses import dataclass, field, asdict
+import json
+
+
+def dict_factory(data):
+    result = dict()
+    for k, v in data:
+        if k == "type":
+            # replace type with $type to match scala odinson documents
+            k = "$type"
+        result[k] = v
+    return result
 
 
 class Base:
     def to_dict(self):
-        return asdict(self)
+        return asdict(self, dict_factory=dict_factory)
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
 
 @dataclass
