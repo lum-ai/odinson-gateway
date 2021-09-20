@@ -29,7 +29,7 @@ class OdinsonEntryPoint {
     }
 
     def mkField(field: HashMap[String, Any]): Field = {
-        field.get("type").toString() match {
+        field.get("$type").toString() match {
             case "ai.lum.odinson.TokensField" =>
                 val name = field.get("name").toString()
                 val tokens = field.get("tokens").asInstanceOf[ArrayList[String]].asScala.toSeq
