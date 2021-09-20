@@ -9,7 +9,7 @@ class OdinsonGatewayClient:
             gateway_parameters=GatewayParameters(auto_convert=True)
         )
 
-    def make_memory_index(self, documents: list[Document]):
+    def make_memory_index(self, documents: list[Document]) -> ExtractorEngine:
         data = [d.to_dict() for d in documents]
         ee = self.gateway.entry_point.mkMemoryIndex(data)
         return ExtractorEngine(ee)
