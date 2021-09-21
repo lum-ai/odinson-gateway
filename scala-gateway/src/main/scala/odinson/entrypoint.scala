@@ -1,11 +1,24 @@
 package odinson
 
+import java.nio.file.Paths
 import java.util.{ ArrayList, HashMap }
 import scala.collection.JavaConverters._
+import org.apache.lucene.store.FSDirectory
+import ai.lum.common.ConfigFactory
 import ai.lum.odinson.{ Document, Sentence, Field, TokensField, GraphField }
 import ai.lum.odinson.ExtractorEngine
 
 class OdinsonEntryPoint {
+
+    def mkIndex(): ExtractorEngine = {
+        ExtractorEngine.fromConfig()
+    }
+
+    def mkIndex(path: String): ExtractorEngine = {
+        val config = ConfigFactory.load()
+        val dir = FSDirectory.open(Paths.get(path))
+        ExtractorEngine.fromDirectory(config, dir)
+    }
 
     def mkMemoryIndex(docs: ArrayList[HashMap[String, Any]]): ExtractorEngine = {
         ExtractorEngine.inMemory(mkDocuments(docs))
