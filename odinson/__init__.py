@@ -8,4 +8,8 @@ __all__ = [
     "Field",
     "TokensField",
     "GraphField",
+    "StringField",
+    "DateField",
+    "NumberField",
+    "NestedField",
 ]
