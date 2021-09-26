@@ -39,6 +39,12 @@ class Field(Base):
             return TokensField.from_dict(data)
         elif data["$type"] == "ai.lum.odinson.GraphField":
             return GraphField.from_dict(data)
+        elif data["$type"] == "ai.lum.odinson.StringField":
+            return StringField.from_dict(data)
+        elif data["$type"] == "ai.lum.odinson.DateField":
+            return DateField.from_dict(data)
+        elif data["$type"] == "ai.lum.odinson.NumberField":
+            return NumberField.from_dict(data)
         else:
             raise Exception("unsupported field type")
 
@@ -66,6 +72,42 @@ class GraphField(Field):
     @classmethod
     def from_dict(cls, data):
         return cls(data["name"], data["edges"], data["roots"])
+
+
+@dataclass
+class StringField(Field):
+    string: str
+
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.StringField"
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data["name"], data["string"])
+
+
+@dataclass
+class DateField(Field):
+    date: str
+
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.DateField"
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data["name"], data["date"])
+
+
+@dataclass
+class NumberField(Field):
+    value: float
+
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.NumberField"
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data["name"], data["value"])
 
 
 @dataclass
