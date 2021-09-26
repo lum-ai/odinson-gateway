@@ -1,15 +1,6 @@
+from __future__ import annotations
 from dataclasses import dataclass, field, asdict
 import json
-
-
-def dict_factory(data):
-    result = dict()
-    for k, v in data:
-        if k == "type":
-            # replace type with $type to match scala odinson documents
-            k = "$type"
-        result[k] = v
-    return result
 
 
 class Base:
@@ -26,6 +17,32 @@ class Base:
     @classmethod
     def from_json(cls, string):
         return cls.from_dict(json.loads(string))
+
+
+@dataclass
+class Document(Base):
+    id: str
+    metadata: list[Field]
+    sentences: list[Sentence]
+
+    @classmethod
+    def from_dict(cls, data):
+        id = data["id"]
+        metadata = [Field.from_dict(f) for f in data["metadata"]]
+        sentences = [Sentence.from_dict(s) for s in data["sentences"]]
+        return cls(id, metadata, sentences)
+
+
+@dataclass
+class Sentence(Base):
+    numTokens: int
+    fields: list[Field]
+
+    @classmethod
+    def from_dict(cls, data):
+        numTokens = data["numTokens"]
+        fields = [Field.from_dict(f) for f in data["fields"]]
+        return cls(numTokens, fields)
 
 
 @dataclass
@@ -127,27 +144,11 @@ class NestedField(Field):
         return cls(name, fields)
 
 
-@dataclass
-class Sentence(Base):
-    numTokens: int
-    fields: list[Field]
-
-    @classmethod
-    def from_dict(cls, data):
-        numTokens = data["numTokens"]
-        fields = [Field.from_dict(f) for f in data["fields"]]
-        return cls(numTokens, fields)
-
-
-@dataclass
-class Document(Base):
-    id: str
-    metadata: list[Field]
-    sentences: list[Sentence]
-
-    @classmethod
-    def from_dict(cls, data):
-        id = data["id"]
-        metadata = [Field.from_dict(f) for f in data["metadata"]]
-        sentences = [Sentence.from_dict(s) for s in data["sentences"]]
-        return cls(id, metadata, sentences)
+def dict_factory(data):
+    result = dict()
+    for k, v in data:
+        if k == "type":
+            # prepend dollar sign to word "type" to match scala odinson documents
+            k = "$type"
+        result[k] = v
+    return result
