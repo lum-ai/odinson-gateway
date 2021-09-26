@@ -4,7 +4,7 @@ from .document import Document
 from .engine import ExtractorEngine
 
 
-class OdinsonGatewayClient:
+class OdinsonGateway:
     def __init__(self):
         self.gateway = JavaGateway(
             gateway_parameters=GatewayParameters(auto_convert=True)

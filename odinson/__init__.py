@@ -1,8 +1,8 @@
-from .gateway import OdinsonGatewayClient
+from .gateway import OdinsonGateway
 from .document import *
 
 __all__ = [
-    "OdinsonGatewayClient",
+    "OdinsonGateway",
     "Document",
     "Sentence",
     "Field",
