@@ -35,18 +35,21 @@ class Field(Base):
 
     @classmethod
     def from_dict(cls, data):
-        if data["$type"] == "ai.lum.odinson.TokensField":
+        field_type = data.get("$type")
+        if field_type == "ai.lum.odinson.TokensField":
             return TokensField.from_dict(data)
-        elif data["$type"] == "ai.lum.odinson.GraphField":
+        elif field_type == "ai.lum.odinson.GraphField":
             return GraphField.from_dict(data)
-        elif data["$type"] == "ai.lum.odinson.StringField":
+        elif field_type == "ai.lum.odinson.StringField":
             return StringField.from_dict(data)
-        elif data["$type"] == "ai.lum.odinson.DateField":
+        elif field_type == "ai.lum.odinson.DateField":
             return DateField.from_dict(data)
-        elif data["$type"] == "ai.lum.odinson.NumberField":
+        elif field_type == "ai.lum.odinson.NumberField":
             return NumberField.from_dict(data)
+        elif field_type == "ai.lum.odinson.NestedField":
+            return NestedField.from_dict(data)
         else:
-            raise Exception("unsupported field type")
+            raise Exception(f"unsupported field type {field_type!r}")
 
 
 @dataclass
@@ -108,6 +111,20 @@ class NumberField(Field):
     @classmethod
     def from_dict(cls, data):
         return cls(data["name"], data["value"])
+
+
+@dataclass
+class NestedField(Field):
+    fields: list[Field]
+
+    def __post_init__(self):
+        self.type = "ai.lum.odinson.NestedField"
+
+    @classmethod
+    def from_dict(cls, data):
+        name = data["name"]
+        fields = [Field.from_dict(f) for f in data["fields"]]
+        return cls(name, fields)
 
 
 @dataclass
