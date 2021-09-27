@@ -12,7 +12,7 @@ class OdinsonGateway:
         self.entry_point = self.gateway.jvm.odinson.EntryPoint()
 
     @classmethod
-    def launch_gateway(
+    def launch(
         cls, classpath: Optional[str] = None, javaopts: list[str] = []
     ) -> OdinsonGateway:
         if classpath is None:
