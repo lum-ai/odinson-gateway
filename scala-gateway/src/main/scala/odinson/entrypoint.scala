@@ -5,8 +5,7 @@ import java.util.{ ArrayList, HashMap }
 import scala.collection.JavaConverters._
 import org.apache.lucene.store.FSDirectory
 import ai.lum.common.ConfigFactory
-import ai.lum.odinson.{ Document, Sentence, Field, TokensField, GraphField }
-import ai.lum.odinson.ExtractorEngine
+import ai.lum.odinson._
 
 class EntryPoint {
 
@@ -54,6 +53,22 @@ class EntryPoint {
                     edge => (edge.get(0).asInstanceOf[Int], edge.get(1).asInstanceOf[Int], edge.get(2).toString())
                 }
                 GraphField(name, edges, roots)
+            case "ai.lum.odinson.StringField" =>
+                val name = field.get("name").toString()
+                val string = field.get("string").toString()
+                StringField(name, string)
+            case "ai.lum.odinson.DateField" =>
+                val name = field.get("name").toString()
+                val date = field.get("date").toString()
+                DateField(name, date)
+            case "ai.lum.odinson.NumberField" =>
+                val name = field.get("name").toString()
+                val value = field.get("value").asInstanceOf[Double]
+                NumberField(name, value)
+            case "ai.lum.odinson.NestedField" =>
+                val name = field.get("name").toString()
+                val fields = field.get("fields").asInstanceOf[ArrayList[HashMap[String, Any]]].asScala.toSeq.map(mkField)
+                NestedField(name, fields)
         }
     }
 
