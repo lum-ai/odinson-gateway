@@ -1,4 +1,4 @@
-name := "scala-gateway"
+name := "odinson-entrypoint"
 organization := "ai.lum"
 scalaVersion := "2.12.14"
 assemblyJarName := "odinson-entrypoint.jar"

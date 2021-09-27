@@ -43,6 +43,6 @@ class OdinsonGateway:
 
 
 def find_jar():
-    dev_jar = "scala-gateway/target/scala-2.12/odinson-entrypoint.jar"
+    dev_jar = "odinson-entrypoint/target/scala-2.12/odinson-entrypoint.jar"
     if os.path.exists(dev_jar):
         return dev_jar
