@@ -8,7 +8,7 @@ import ai.lum.common.ConfigFactory
 import ai.lum.odinson.{ Document, Sentence, Field, TokensField, GraphField }
 import ai.lum.odinson.ExtractorEngine
 
-class OdinsonEntryPoint {
+class EntryPoint {
 
     def mkIndex(): ExtractorEngine = {
         ExtractorEngine.fromConfig()
