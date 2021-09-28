@@ -1,6 +1,8 @@
 from typing import Optional
 from .results import OdinsonResults
 
+JAVA_MAX_INT = 2 ** 31 - 1
+
 
 class ExtractorEngine:
     def __init__(self, extractor_engine):
@@ -12,11 +14,13 @@ class ExtractorEngine:
     def search(
         self,
         pattern: str,
-        max_hits: Optional[int] = None,
+        filter: Optional[str] = None,
+        max_hits: int = JAVA_MAX_INT,
         disable_match_selector: bool = False,
     ) -> OdinsonResults:
-        if max_hits is None:
-            max_hits = self.num_docs()
-        query = self.extractor_engine.mkQuery(pattern)
+        if filter is None:
+            query = self.extractor_engine.mkQuery(pattern)
+        else:
+            query = self.extractor_engine.mkQuery(pattern, filter)
         res = self.extractor_engine.query(query, max_hits, disable_match_selector)
         return OdinsonResults.from_scala(res)
