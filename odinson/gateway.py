@@ -1,5 +1,6 @@
 from __future__ import annotations
 import os
+import sys
 from typing import Optional
 from py4j.java_gateway import JavaGateway, GatewayParameters, launch_gateway
 from .document import Document
@@ -16,7 +17,7 @@ class OdinsonGateway:
         cls, classpath: Optional[str] = None, javaopts: list[str] = []
     ) -> OdinsonGateway:
         if classpath is None:
-            classpath = find_jar()
+            classpath = find_jar_path()
         port, proc = launch_gateway(
             classpath=classpath,
             javaopts=javaopts,
@@ -42,7 +43,24 @@ class OdinsonGateway:
         return ExtractorEngine(ee)
 
 
-def find_jar():
-    dev_jar = "odinson-entrypoint/target/scala-2.12/odinson-entrypoint.jar"
-    if os.path.exists(dev_jar):
-        return dev_jar
+def find_jar_path():
+    jar_file = "odinson-entrypoint.jar"
+    paths = []
+    paths.append(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "..", "share", "odinson", jar_file,
+        )
+    )
+    paths.append(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "..", "..", "..", "..", "share", "odinson", jar_file,
+        )
+    )
+    paths.append(os.path.join(sys.prefix, "share", "odinson", jar_file))
+    paths.append(f"odinson-entrypoint/target/scala-2.12/{jar_file}")
+    for path in paths:
+        if os.path.exists(path):
+            return path
+    return ""
