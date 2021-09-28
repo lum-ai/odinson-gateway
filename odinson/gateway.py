@@ -49,13 +49,22 @@ def find_jar_path():
     paths.append(
         os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            "..", "share", "odinson", jar_file,
+            "..",
+            "share",
+            "odinson",
+            jar_file,
         )
     )
     paths.append(
         os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
-            "..", "..", "..", "..", "share", "odinson", jar_file,
+            "..",
+            "..",
+            "..",
+            "..",
+            "share",
+            "odinson",
+            jar_file,
         )
     )
     paths.append(os.path.join(sys.prefix, "share", "odinson", jar_file))
