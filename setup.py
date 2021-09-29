@@ -17,5 +17,5 @@ setup(
     packages=["odinson"],
     data_files=[("share/odinson", [JAR_FILE_PATH])],
     version=VERSION,
-    install_requires=["py4j==0.10.9.2"],
+    install_requires=open("requirements.txt").read().splitlines(),
 )
