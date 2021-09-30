@@ -50,6 +50,7 @@ def find_jar_path():
         os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
             "..",
+            "..",
             "share",
             "odinson",
             jar_file,
@@ -62,13 +63,14 @@ def find_jar_path():
             "..",
             "..",
             "..",
+            "..",
             "share",
             "odinson",
             jar_file,
         )
     )
     paths.append(os.path.join(sys.prefix, "share", "odinson", jar_file))
-    paths.append(f"odinson-entrypoint/target/scala-2.12/{jar_file}")
+    paths.append(os.path.join("odinson-entrypoint", "target", "scala-2.12", jar_file))
     for path in paths:
         if os.path.exists(path):
             return os.path.normpath(path)

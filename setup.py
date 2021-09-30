@@ -13,8 +13,8 @@ subprocess.call("sbt assembly", shell=True)
 os.chdir("..")
 
 setup(
-    name="odinson",
-    packages=["odinson"],
+    name="odinson-gateway",
+    packages=["odinson.gateway"],
     data_files=[("share/odinson", [JAR_FILE_PATH])],
     version=VERSION,
     install_requires=open("requirements.txt").read().splitlines(),
