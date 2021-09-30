@@ -1,1 +1,1 @@
-# odinson-python
+# odinson-gateway
