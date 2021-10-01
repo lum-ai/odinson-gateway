@@ -30,14 +30,14 @@ class OdinsonGateway:
         )
         return cls(gateway)
 
-    def make_index(self, path: Optional[str] = None) -> ExtractorEngine:
+    def open_index(self, path: Optional[str] = None) -> ExtractorEngine:
         if path is None:
             ee = self.entry_point.mkIndex()
         else:
             ee = self.entry_point.mkIndex(path)
         return ExtractorEngine(ee)
 
-    def make_memory_index(self, documents: list[Document]) -> ExtractorEngine:
+    def open_memory_index(self, documents: list[Document]) -> ExtractorEngine:
         data = [d.to_dict() for d in documents]
         ee = self.entry_point.mkMemoryIndex(data)
         return ExtractorEngine(ee)
