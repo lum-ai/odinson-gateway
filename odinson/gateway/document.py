@@ -21,6 +21,7 @@ class Base:
 
 @dataclass
 class Document(Base):
+    """An Odinson document."""
     id: str
     metadata: list[Field]
     sentences: list[Sentence]
