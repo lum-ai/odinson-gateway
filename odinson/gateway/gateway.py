@@ -31,6 +31,9 @@ class OdinsonGateway:
         )
         return cls(gateway)
 
+    def index_document(self, document: Document, path: Optional[str] = None):
+        self.index_documents([document], path)
+
     def index_documents(self, documents: list[Document], path: Optional[str] = None):
         data = [d.to_dict() for d in documents]
         if path is None:
