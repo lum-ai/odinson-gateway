@@ -44,6 +44,14 @@ class Document(Base):
                 data = f.read()
         return cls.from_json(data)
 
+    def to_file(self, filename):
+        if filename.endswith('.gz'):
+            with gzip.open(filename, 'w') as f:
+                f.write(self.to_json().encode('utf-8'))
+        else:
+            with open(filename, 'w') as f:
+                f.write(self.to_json())
+
 
 @dataclass
 class Sentence(Base):
