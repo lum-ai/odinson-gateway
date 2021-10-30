@@ -31,12 +31,19 @@ class OdinsonGateway:
         )
         return cls(gateway)
 
+    def index_documents(self, documents: list[Document], path: Optional[str] = None):
+        data = [d.to_dict() for d in documents]
+        if path is None:
+            self.entry_point.indexDocuments(data)
+        else:
+            self.entry_point.indexDocuments(path, data)
+
     def open_index(self, path: Optional[str] = None) -> ExtractorEngine:
         """Opens an existing index."""
         if path is None:
-            ee = self.entry_point.mkIndex()
+            ee = self.entry_point.mkExtractorEngine()
         else:
-            ee = self.entry_point.mkIndex(path)
+            ee = self.entry_point.mkExtractorEngine(path)
         return ExtractorEngine(ee)
 
     def open_memory_index(self, documents: list[Document]) -> ExtractorEngine:
