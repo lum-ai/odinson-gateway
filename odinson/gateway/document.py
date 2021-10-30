@@ -64,6 +64,11 @@ class Sentence(Base):
         fields = [Field.from_dict(f) for f in data["fields"]]
         return cls(numTokens, fields)
 
+    def get_field(self, name):
+        for field in self.fields:
+            if field.name == name:
+                return field
+
 
 @dataclass
 class Field(Base):
