@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, asdict
 import json
+import gzip
 
 
 class Base:
@@ -32,6 +33,16 @@ class Document(Base):
         metadata = [Field.from_dict(f) for f in data["metadata"]]
         sentences = [Sentence.from_dict(s) for s in data["sentences"]]
         return cls(id, metadata, sentences)
+
+    @classmethod
+    def from_file(cls, filename):
+        if filename.endswith('.gz'):
+            with gzip.open(filename, 'r') as f:
+                data = f.read().decode('utf-8')
+        else:
+            with open(filename) as f:
+                data = f.read()
+        return cls.from_json(data)
 
 
 @dataclass
