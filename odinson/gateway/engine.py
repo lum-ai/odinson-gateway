@@ -9,6 +9,11 @@ class ExtractorEngine:
         self.extractor_engine = extractor_engine
 
     def num_docs(self) -> int:
+        """
+        Returns the number of lucene documents in the index.
+        Note that not all lucene documents correspond to sentences,
+        some contain only metadata.
+        """
         return self.extractor_engine.numDocs()
 
     def search(
