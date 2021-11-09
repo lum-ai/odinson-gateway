@@ -36,6 +36,7 @@ class Document(Base):
 
     @classmethod
     def from_file(cls, filename):
+        filename = str(filename)
         if filename.endswith('.gz'):
             with gzip.open(filename, 'r') as f:
                 data = f.read().decode('utf-8')
@@ -45,6 +46,7 @@ class Document(Base):
         return cls.from_json(data)
 
     def to_file(self, filename):
+        filename = str(filename)
         if filename.endswith('.gz'):
             with gzip.open(filename, 'w') as f:
                 f.write(self.to_json().encode('utf-8'))
