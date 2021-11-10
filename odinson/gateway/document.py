@@ -1,7 +1,8 @@
 from __future__ import annotations
-from dataclasses import dataclass, field, asdict
 import json
 import gzip
+from dataclasses import dataclass, field, asdict
+import networkx as nx
 
 
 class Base:
@@ -66,7 +67,7 @@ class Sentence(Base):
         fields = [Field.from_dict(f) for f in data["fields"]]
         return cls(numTokens, fields)
 
-    def get_field(self, name):
+    def get_field(self, name: str) -> Field:
         for field in self.fields:
             if field.name == name:
                 return field
@@ -119,6 +120,18 @@ class GraphField(Field):
     @classmethod
     def from_dict(cls, data):
         return cls(data["name"], data["edges"], data["roots"])
+
+    def to_networkx(self) -> nx.DiGraph:
+        """
+        Returns a directed graph. Note that all edges are added
+        in both directions, and the first char in the label indicates
+        direction.
+        """
+        g = nx.DiGraph()
+        for u, v, label in self.edges:
+            g.add_edge(u, v, label=f'>{label}')
+            g.add_edge(v, u, label=f'<{label}')
+        return g
 
 
 @dataclass
