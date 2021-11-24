@@ -4,19 +4,38 @@ import java.nio.file.Paths
 import java.util.{ ArrayList, HashMap }
 import scala.collection.JavaConverters._
 import org.apache.lucene.store.FSDirectory
+import com.typesafe.config.ConfigValueFactory
 import ai.lum.common.ConfigFactory
+import ai.lum.odinson.lucene.index.OdinsonIndex
 import ai.lum.odinson._
 
 class EntryPoint {
 
-    def mkIndex(): ExtractorEngine = {
+    def mkExtractorEngine(): ExtractorEngine = {
         ExtractorEngine.fromConfig()
     }
 
-    def mkIndex(path: String): ExtractorEngine = {
+    def mkExtractorEngine(path: String): ExtractorEngine = {
+        val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
+        ExtractorEngine.fromConfig(config)
+    }
+
+    def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
         val config = ConfigFactory.load()
-        val dir = FSDirectory.open(Paths.get(path))
-        ExtractorEngine.fromDirectory(config, dir)
+        val index = OdinsonIndex.fromConfig(config)
+        for (d <- mkDocuments(docs)) {
+            index.indexOdinsonDoc(d)
+        }
+        index.close()
+    }
+
+    def indexDocuments(path: String, docs: ArrayList[HashMap[String, Any]]): Unit = {
+        val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
+        val index = OdinsonIndex.fromConfig(config)
+        for (d <- mkDocuments(docs)) {
+            index.indexOdinsonDoc(d)
+        }
+        index.close()
     }
 
     def mkMemoryIndex(docs: ArrayList[HashMap[String, Any]]): ExtractorEngine = {

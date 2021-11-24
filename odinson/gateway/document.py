@@ -1,6 +1,8 @@
 from __future__ import annotations
-from dataclasses import dataclass, field, asdict
 import json
+import gzip
+from dataclasses import dataclass, field, asdict
+import networkx as nx
 
 
 class Base:
@@ -33,6 +35,26 @@ class Document(Base):
         sentences = [Sentence.from_dict(s) for s in data["sentences"]]
         return cls(id, metadata, sentences)
 
+    @classmethod
+    def from_file(cls, filename):
+        filename = str(filename)
+        if filename.endswith('.gz'):
+            with gzip.open(filename, 'r') as f:
+                data = f.read().decode('utf-8')
+        else:
+            with open(filename) as f:
+                data = f.read()
+        return cls.from_json(data)
+
+    def to_file(self, filename):
+        filename = str(filename)
+        if filename.endswith('.gz'):
+            with gzip.open(filename, 'w') as f:
+                f.write(self.to_json().encode('utf-8'))
+        else:
+            with open(filename, 'w') as f:
+                f.write(self.to_json())
+
 
 @dataclass
 class Sentence(Base):
@@ -44,6 +66,11 @@ class Sentence(Base):
         numTokens = data["numTokens"]
         fields = [Field.from_dict(f) for f in data["fields"]]
         return cls(numTokens, fields)
+
+    def get_field(self, name: str) -> Field:
+        for field in self.fields:
+            if field.name == name:
+                return field
 
 
 @dataclass
@@ -93,6 +120,18 @@ class GraphField(Field):
     @classmethod
     def from_dict(cls, data):
         return cls(data["name"], data["edges"], data["roots"])
+
+    def to_networkx(self) -> nx.DiGraph:
+        """
+        Returns a directed graph. Note that all edges are added
+        in both directions, and the first char in the label indicates
+        direction.
+        """
+        g = nx.DiGraph()
+        for u, v, label in self.edges:
+            g.add_edge(u, v, label=f'>{label}')
+            g.add_edge(v, u, label=f'<{label}')
+        return g
 
 
 @dataclass

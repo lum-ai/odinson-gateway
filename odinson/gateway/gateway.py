@@ -1,10 +1,14 @@
 from __future__ import annotations
 import os
 import sys
-from typing import Optional
+from pathlib import Path
+from typing import Union, Optional
 from py4j.java_gateway import JavaGateway, GatewayParameters, launch_gateway
 from .document import Document
 from .engine import ExtractorEngine
+
+
+PathLike = Union[str, Path]
 
 
 class OdinsonGateway:
@@ -31,12 +35,22 @@ class OdinsonGateway:
         )
         return cls(gateway)
 
-    def open_index(self, path: Optional[str] = None) -> ExtractorEngine:
+    def index_document(self, document: Document, path: Optional[PathLike] = None):
+        self.index_documents([document], str(path))
+
+    def index_documents(self, documents: list[Document], path: Optional[PathLike] = None):
+        data = [d.to_dict() for d in documents]
+        if path is None:
+            self.entry_point.indexDocuments(data)
+        else:
+            self.entry_point.indexDocuments(str(path), data)
+
+    def open_index(self, path: Optional[PathLike] = None) -> ExtractorEngine:
         """Opens an existing index."""
         if path is None:
-            ee = self.entry_point.mkIndex()
+            ee = self.entry_point.mkExtractorEngine()
         else:
-            ee = self.entry_point.mkIndex(path)
+            ee = self.entry_point.mkExtractorEngine(str(path))
         return ExtractorEngine(ee)
 
     def open_memory_index(self, documents: list[Document]) -> ExtractorEngine:
