@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import java.util.{ ArrayList, HashMap }
 import scala.collection.JavaConverters._
 import org.apache.lucene.store.FSDirectory
-import com.typesafe.config.ConfigValueFactory
+import com.typesafe.config.{ Config, ConfigValueFactory }
 import ai.lum.common.ConfigFactory
 import ai.lum.odinson.lucene.index.OdinsonIndex
 import ai.lum.odinson._
@@ -24,16 +24,15 @@ class EntryPoint {
       docs: Seq[Document], 
       config: Config
     ): Unit = {
-      OdinsonIndex.usingIndex(testConfig) { index =>
+      OdinsonIndex.usingIndex(config) { index =>
         docs.foreach(index.indexOdinsonDoc)
       }
     }
 
     def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
       val config = ConfigFactory.load()
-      OdinsonIndex.usingIndex
-      val docs = mkDocuments(docs)
-      indexDocuments(docs, config)
+      val ods = mkDocuments(docs)
+      indexDocuments(ods, config)
     }
 
     def indexDocuments(
@@ -41,8 +40,8 @@ class EntryPoint {
       docs: ArrayList[HashMap[String, Any]]
     ): Unit = {
       val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
-      val docs = mkDocuments(docs)
-      indexDocuments(docs, config)
+      val ods = mkDocuments(docs)
+      indexDocuments(ods, config)
     }
 
     def mkMemoryIndex(docs: ArrayList[HashMap[String, Any]]): ExtractorEngine = {
