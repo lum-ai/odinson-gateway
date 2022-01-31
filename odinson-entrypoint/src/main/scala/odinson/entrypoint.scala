@@ -20,22 +20,29 @@ class EntryPoint {
         ExtractorEngine.fromConfig(config)
     }
 
-    def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
-        val config = ConfigFactory.load()
-        val index = OdinsonIndex.fromConfig(config)
-        for (d <- mkDocuments(docs)) {
-            index.indexOdinsonDoc(d)
-        }
-        index.close()
+    def indexDocuments(
+      docs: Seq[Document], 
+      config: Config
+    ): Unit = {
+      OdinsonIndex.usingIndex(testConfig) { index =>
+        docs.foreach(index.indexOdinsonDoc)
+      }
     }
 
-    def indexDocuments(path: String, docs: ArrayList[HashMap[String, Any]]): Unit = {
-        val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
-        val index = OdinsonIndex.fromConfig(config)
-        for (d <- mkDocuments(docs)) {
-            index.indexOdinsonDoc(d)
-        }
-        index.close()
+    def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
+      val config = ConfigFactory.load()
+      OdinsonIndex.usingIndex
+      val docs = mkDocuments(docs)
+      indexDocuments(docs, config)
+    }
+
+    def indexDocuments(
+      path: String, 
+      docs: ArrayList[HashMap[String, Any]]
+    ): Unit = {
+      val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
+      val docs = mkDocuments(docs)
+      indexDocuments(docs, config)
     }
 
     def mkMemoryIndex(docs: ArrayList[HashMap[String, Any]]): ExtractorEngine = {
