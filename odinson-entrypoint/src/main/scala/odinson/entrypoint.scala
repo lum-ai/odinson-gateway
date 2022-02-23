@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import java.util.{ ArrayList, HashMap }
 import scala.collection.JavaConverters._
 import org.apache.lucene.store.FSDirectory
-import com.typesafe.config.ConfigValueFactory
+import com.typesafe.config.{ Config, ConfigValueFactory }
 import ai.lum.common.ConfigFactory
 import ai.lum.odinson.lucene.index.OdinsonIndex
 import ai.lum.odinson._
@@ -20,22 +20,28 @@ class EntryPoint {
         ExtractorEngine.fromConfig(config)
     }
 
-    def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
-        val config = ConfigFactory.load()
-        val index = OdinsonIndex.fromConfig(config)
-        for (d <- mkDocuments(docs)) {
-            index.indexOdinsonDoc(d)
-        }
-        index.close()
+    def indexDocuments(
+      docs: Seq[Document], 
+      config: Config
+    ): Unit = {
+      OdinsonIndex.usingIndex(config) { index =>
+        docs.foreach(index.indexOdinsonDoc)
+      }
     }
 
-    def indexDocuments(path: String, docs: ArrayList[HashMap[String, Any]]): Unit = {
-        val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
-        val index = OdinsonIndex.fromConfig(config)
-        for (d <- mkDocuments(docs)) {
-            index.indexOdinsonDoc(d)
-        }
-        index.close()
+    def indexDocuments(docs: ArrayList[HashMap[String, Any]]): Unit = {
+      val config = ConfigFactory.load()
+      val ods = mkDocuments(docs)
+      indexDocuments(ods, config)
+    }
+
+    def indexDocuments(
+      path: String, 
+      docs: ArrayList[HashMap[String, Any]]
+    ): Unit = {
+      val config = ConfigFactory.load().withValue("odinson.indexDir", ConfigValueFactory.fromAnyRef(path))
+      val ods = mkDocuments(docs)
+      indexDocuments(ods, config)
     }
 
     def mkMemoryIndex(docs: ArrayList[HashMap[String, Any]]): ExtractorEngine = {
